@@ -1,4 +1,17 @@
-## Setup K8s on Aws
+<h1 align="center">
+  Introduction Kubernetes
+</h1>
+
+<p align="center"><img src="https://www.arkademy.com/img/logo%20arkademy.1c82cf5c.svg" width="500px" alt="Arkademylogo.svg" /></p>
+
+<p align="center">
+    <a href="https://www.arkademy.com/" target="blank">Our Website</a>
+    ·
+    <a href="https://www.arkademy.com/auth/signup">Join With Us</a>
+    ·
+</p>
+
+## 🛠️ Installation K8s on aws
 
 1. Create k8s-controll Instance with image ubuntu
 
@@ -98,7 +111,7 @@ aws s3api delete-bucket --bucket k8s-example-store --region us-west-1
 10. add to .bashrc
 
 ```bash
-export NAME=sunsummit.net
+export NAME=yudomain.com
 export KOPS_STATE_STORE=s3://k8s-sample-store
 ```
 
@@ -106,9 +119,6 @@ export KOPS_STATE_STORE=s3://k8s-sample-store
 
 ```bash
 ssh-keygen
-
-# then type
-kops create secret --name $NAME sshpublickey admin -i ~/.ssh/id_rsa.pub
 ```
 
 12. list availibillity zone
@@ -134,9 +144,13 @@ kops edit ig --name=$NAME nodes-us-east-1a
 kops edit ig --name=$NAME master-us-east-1a
 ```
 
-15. finish and create cluster
+15. set ssh and create cluster
 
 ```bash
+# connect with ssh
+kops create secret --name $NAME sshpublickey admin -i ~/.ssh/id_rsa.pub
+
+# apply cluster
 kops update cluster --name $NAME --yes --admin
 ```
 
