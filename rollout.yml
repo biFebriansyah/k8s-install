@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-rollout
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sampleapp
+  template:
+    metadata:
+      labels:
+        app: sampleapp
+    spec:
+      containers:
+        - name: navbar
+          image: karthequian/helloworld:black
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-rollout
+spec:
+  selector:
+    app: sampleapp
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 80
+      nodePort: 31665
+      protocol: TCP
+      name: navservice

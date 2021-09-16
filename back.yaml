@@ -1,0 +1,56 @@
+apiVersion: v1
+data:
+  DB_USERS: "develop"
+  DB_HOST: "54.156.37.242"
+  DB_NAME: "testdb"
+  DB_PASS: "abcd1234"
+  REDIS_HOST: "54.156.37.242"
+  REDIS_PASS: "abcd1234"
+kind: ConfigMap
+metadata:
+  name: backend-env
+  namespace: example
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: example
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: back-test
+  template:
+    metadata:
+      labels:
+        app: back-test
+    spec:
+      containers:
+        - name: backend
+          image: bukanebi/backends:dev
+          ports:
+            - containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: backend-env
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deployment
+  namespace: example
+spec:
+  selector:
+    app: nginx-test
+    # type: ClusterIP
+    # type: LoadBalancer
+    type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 9000
+      NodePort: 31665
+      protocol: TCP
+      name: serviceport

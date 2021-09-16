@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: good-healtcheck
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: probe-good
+  template:
+    metadata:
+      labels:
+        app: probe-good
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.7.9
+          ports:
+            - containerPort: 80
+          args:
+            - /bin/bash
+            - -c
+            - touch /tmp/healthy; sleep 15; rm -rf /tmp/healthy; sleep 600
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 3

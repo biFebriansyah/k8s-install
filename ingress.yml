@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  namespace: example
+  labels:
+    app: user-services
+spec:
+  selector:
+    app: user-services
+  # type: LoadBalancer
+  # type: ClusterIP
+  type: NodePort
+  ports:
+    - port: 8081
+      targetPort: 9000
+      protocol: TCP
+      name: serviceport
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend
+  namespace: example
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/issuer: "letsencrypt-staging"
+spec:
+  tls:
+    - hosts:
+        - back.sunsummit.net
+      secretName: example-tls
+  rules:
+    - host: back.sunsummit.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-service
+                port:
+                  number: 8081

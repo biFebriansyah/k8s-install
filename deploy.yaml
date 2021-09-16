@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+    spec:
+      containers:
+        - name: front
+          image: karthequian/helloworld:black
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    app: nginx-test
+    # type: ClusterIP
+    # type: LoadBalancer
+    type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 80
+      protocol: TCP
+      name: serviceport
